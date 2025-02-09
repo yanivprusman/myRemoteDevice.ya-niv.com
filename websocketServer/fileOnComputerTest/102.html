@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <input id="msg">
+    <button onclick="ws.send(msg.value)">Send</button>
+    <div id="log"></div>
+    <script>
+        const ws = new WebSocket('wss://ws.postman-echo.com/raw');
+        ws.onmessage = e => log.innerHTML += e.data + '<br>';
+    </script>
+</body>
+</html>

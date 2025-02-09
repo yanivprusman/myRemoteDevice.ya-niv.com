@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <input id="msg">
+    <button onclick="ws.send(msg.value)">Send</button>
+    <div id="content"></div>
+    <script>
+        const ws = new WebSocket('wss://ws.postman-echo.com/raw');
+        ws.onmessage = e => {
+            document.body.innerHTML = ""; 
+            let newDiv = document.createElement("div");
+            newDiv.innerHTML = e.data;
+            document.body.appendChild(newDiv);
+        };
+    </script>
+</body>
+</html>

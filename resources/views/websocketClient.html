@@ -1,0 +1,104 @@
+prompt
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Client As Server</title>
+</head>
+<body>
+    <div id="info"></div>
+    <div id="status">Not Connected</div>
+    <div id="messages"></div>
+    <script>
+        class WebSocketClient {
+            constructor() {
+                this.deviceIdentifier = '${deviceIdentifier}';
+                this.passWord = '${passWord}';
+                this.port = 8443;
+                this.connection = null;
+                this.connected = false;
+                this.info = document.getElementById('info');
+                this.statusElement = document.getElementById('status');
+                this.messagesElement = document.getElementById('messages');
+            }
+            connect() {
+                const wsUrl = `wss://myRemoteDevice.ya-niv.com:\${this.port}/?type=device&deviceIdentifier=\${this.deviceIdentifier}&passWord=\${this.passWord}\`;
+                try {
+                    this.connection = new WebSocket(wsUrl);
+                    this.setupEventListeners();
+                } catch (error) {
+                    this.updateStatus(\`Connection error: \${error.message}\`);
+                }
+            }
+            setupEventListeners() {
+                this.connection.onopen = () => {
+                    this.connected = true;
+                    this.info.textContent = "Keep this tab open to run server";
+                    this.updateStatus('Connected to WebSocket server');
+                };
+                this.connection.onmessage = (event) => {
+                    try {
+                        const msg = event.data;
+                        this.logMessage(\`Received message: \${msg}\`);
+                        const parsedMsg = JSON.parse(msg);
+                        if (!parsedMsg) {
+                            this.logMessage("Received invalid JSON");
+                            return;
+                        }
+                        const data = {
+                            msg: JSON.parse(parsedMsg.msg),
+                            resourceId: parsedMsg.resourceId
+                        };
+                        if (data.msg.action === 'getPage') {
+                            const response = {
+                                msg: {
+                                    resourceId: data.resourceId,
+                                    action: 'respondingToGetPage',
+                                    page: \`${customResponse}\`
+                                }
+                            };
+                            this.sendMessage(response);
+                        }
+                    } catch (error) {
+                        this.logMessage(\`Error processing message: \${error.message}\`);
+                    }
+                };
+                this.connection.onclose = () => {
+                    this.connected = false;
+                    this.updateStatus('Disconnected from server');
+                    // Attempt to reconnect after 5 seconds
+                    setTimeout(() => this.connect(), 5000);
+                };
+
+                this.connection.onerror = (error) => {
+                    this.updateStatus(\`WebSocket error: \${error.message}\`);
+                };
+            }
+            sendMessage(data) {
+                if (this.connected && this.connection) {
+                    try {
+                        this.connection.send(JSON.stringify(data));
+                        this.logMessage(\`Sent message: \${JSON.stringify(data)}\`);
+                    } catch (error) {
+                        this.logMessage(\`Error sending message: \${error.message}\`);
+                    }
+                } else {
+                    this.logMessage('Cannot send message: Not connected');
+                }
+            }
+            updateStatus(status) {
+                this.statusElement.textContent = status;
+                this.logMessage(status);
+            }
+            logMessage(message) {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = \`\${new Date().toISOString()}: \${message}\`;
+                this.messagesElement.insertBefore(messageElement, this.messagesElement.firstChild);
+            }
+        }
+        const client = new WebSocketClient();
+        client.connect();
+    <\/script>
+</body>
+</html>`;

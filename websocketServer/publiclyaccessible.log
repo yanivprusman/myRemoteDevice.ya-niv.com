@@ -1,0 +1,9 @@
+Starting server... on port 8443
+Base socket created
+Secure socket created
+Server ready, starting loop...
+registered device
+peer connected to middle man! (resourceId:54 type:device deviceIdentifier:myRemoteDevice1)
+found registered device
+peer connected to middle man! (resourceId:91 type:client deviceIdentifier:myRemoteDevice1)
+received message from device sending to 91

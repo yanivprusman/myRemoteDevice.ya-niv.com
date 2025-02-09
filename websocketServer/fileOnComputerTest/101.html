@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Client As Server</title>
+</head>
+<body>
+    <button onclick="openTab()">Open Tab</button>
+    <script>
+        function openTab(){
+            var pageContent ="ggg";
+            blobPageContent = new Blob([pageContent], { type: 'text/html' });
+            url = window.URL.createObjectURL(blobPageContent);
+            window.open(url, "_blank");
+        }
+    </script>
+</body>
+
+
+
