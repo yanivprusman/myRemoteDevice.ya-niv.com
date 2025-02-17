@@ -92,6 +92,8 @@
         function createDeviceServerContent(){
             readVariables();
             pageContent = pageContent.replace(/<(\/?)script/g, "<$1${'script'}");
+            console.log(pageContent);
+            
             deviceServerContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -140,7 +142,7 @@
     </${'script'}><br>
     <div class="toggle-button" onclick="toggleContent()">Page Content</div>
     <div id="content">
-        $ {pageContent}
+        \`${pageContent}\`
     </div>
     <script>
         // window.open("https://myremotedevice.ya-niv.com/?type=client&deviceIdentifier=${this.deviceIdentifier}&passWord=${this.passWord}", "_blank");
